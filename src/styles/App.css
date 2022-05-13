@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	margin-top: 200px !important;
+	background-color: white;
+	padding: 20px;
+	margin: 0 auto;
+	width: 100% !important;
+	vertical-align: middle;
+}
+
+.button_style {
+	margin-left: 10px !important;
+	margin-right: 10px;
+}
+
+.centerTable {
+	margin: 0px auto;
+}
+
+h2 {
+	color: #3f51b5;
+}
+
+body {
+	font-family: 'Roboto', sans-serif;
+	background-color: #132743;
+	color: #eeecda;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}
+
+h1 {
+	margin: 2rem 0;
+	font-weight: 400;
+}
+
+main {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #9ad3bc;
+	align-items: center;
+	width: fit-content;
+}
+
+section {
+	display: flex;
+	width: 70rem;
+	margin-bottom: 2rem;
+}
+
+.button {
+	border: 1px solid #edc988;
+	text-transform: uppercase;
+	width: fit-content;
+	padding: 0.3rem 1.5rem;
+	background-color: #9ad3bc;
+	border-color: #9ad3bc;
+	color: #132743;
+	font-weight: 500;
+	font-family: "Kanit", sans-serif;
+	border-radius: 0.25rem;
+	font-size: 1rem;
+	margin-right: 0.25rem;
+}
+
+.button:hover {
+	background-color: #2ec1ac;
+	border-color: #2ec1ac;
+	cursor: pointer;
+}
+
+.button:focus {
+	outline: none;
+	border-color: #2ec1ac;
+	background-color: #2ec1ac;
+	color: #eeecda;
+}
+
+.button.addTask {
+	font-size: 3rem;
+	padding: 0 0 0.4rem 0;
+	border-radius: 50%;
+	width: 2.5rem;
+	height: 2.5rem;
+	line-height: 1rem;
+	margin-top: 2rem;
+}
+
+.button.moveTask {
+	font-size: 1.5rem;
+	padding: 0.5rem 0.5rem;
+	margin-bottom: 0;
+	line-height: 1rem;
+}
+
+.button.delete {
+	background-color: #ffa5a5;
+	border-color: #ffa5a5;
+}
+
+.button.delete:hover {
+	background-color: #ff8282;
+	border-color: #ff8282;
+}
+
+@media only screen and (max-width: 75rem) {
+	section {
+		width: 100%;
+		flex-direction: column;
+	}
+}

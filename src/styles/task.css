@@ -1,0 +1,144 @@
+.task {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: flex-end;
+    border: 1px solid #eeecda;
+    border-radius: 0.25rem;
+}
+.task.collapsedTask .moveTask {
+    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    padding: 0.3rem 0.5rem;
+}
+.task form {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    margin: 0 0.25rem;
+}
+.task form .input {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+    color: #eeecda;
+    text-align: center;
+    resize: none;
+    display: flex;
+    font-family: "Kanit", sans-serif;
+}
+.task form .input:hover {
+    cursor: pointer;
+    border: 1px solid #eeecda;
+}
+.task form .input:focus {
+    outline: none;
+    border-color: #edc988;
+    color: #edc988;
+}
+.task form .input::placeholder {
+    color: #eeecda;
+}
+.task form .title {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem 0;
+    width: 100%;
+    font-size: 1.1rem;
+}
+.task form .title:hover {
+    cursor: text;
+}
+.task form .description {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    font-size: 1.1rem;
+}
+.task form .description:hover {
+    cursor: text;
+}
+.task form .urgencyLabels {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: row;
+}
+.task form .urgencyLabels label {
+    color: #132743;
+    padding: 0.05rem 0.5rem;
+    margin: 0 0.25rem;
+    text-transform: uppercase;
+    border-radius: 0.25rem;
+}
+.task form .urgencyLabels label .icon {
+    font-size: 1.25rem;
+    margin-right: 0.25rem;
+    transition: all 0.4s ease-in-out;
+}
+.task form .urgencyLabels label .icon.hide {
+    display: none;
+}
+.task form .urgencyLabels label .icon.show {
+    display: inline-block;
+}
+.task form .urgencyLabels label input {
+    display: none;
+}
+.task form .urgencyLabels label.low {
+    background-color: #9ad3bc;
+}
+.task form .urgencyLabels label.low:hover {
+    cursor: pointer;
+    background-color: #2ec1ac;
+    border-color: #2ec1ac;
+}
+.task form .urgencyLabels label.medium {
+    background-color: #edf285;
+}
+.task form .urgencyLabels label.medium:hover {
+    cursor: pointer;
+    background-color: #2ec1ac;
+    border-color: #2ec1ac;
+}
+.task form .urgencyLabels label.high {
+    background-color: #ffa5a5;
+}
+.task form .urgencyLabels label.high:hover {
+    cursor: pointer;
+    background-color: #2ec1ac;
+    border-color: #2ec1ac;
+}
+.task form .urgencyLabels label.selected {
+    font-weight: 700;
+}
+.task form.collapsed {
+    flex-direction: row;
+    align-content: center;
+}
+.task form.collapsed .title {
+    margin: 0;
+}
+.task form.collapsed .title:hover {
+    border-color: transparent;
+    cursor: default;
+}
+.task form.collapsed .urgencyLabels {
+    margin-bottom: 0;
+    margin-right: 1rem;
+}
+.task form.collapsed .description, .task form.collapsed label {
+    display: none;
+}
+.task form.collapsed label.selected {
+    display: inline-block;
+    font-weight: 500;
+}
+.task form.collapsed .button {
+    padding: 0.025rem 0.5rem;
+}
+.task form.collapsed .button.moveTask {
+    background-color: red;
+}
+.task form.collapsed:hover .button {
+    display: inline-block;
+}
