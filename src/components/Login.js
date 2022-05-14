@@ -18,23 +18,27 @@ export default class Login extends React.Component {
 
   login = () => {
 
-    const pwd = bcrypt.hashSync(this.state.password, salt);
+    // const pwd = bcrypt.hashSync(this.state.password, salt);
 
     axios.post('https://taskmanagementbk.azurewebsites.net/users/login', {
       email: this.state.email,
-      password: pwd,
+      password: this.state.password,
     }).then((res) => {
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user_id', res.data.id);
-      this.props.history.push('/dashboard');
-    }).catch((err) => {
-      if (err.response && err.response.data && err.response.data.errorMessage) {
-        swal({
-          text: err.response.data.errorMessage,
-          icon: "error",
-          type: "error"
-        });
+      console.log(res.data)
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('user_id', res.data.id);
+        this.props.history.push('/dashboard');
+      } else {
+        throw new Error("Invalid Username or Password")
       }
+
+    }).catch((err) => {
+      swal({
+        text: err.toString(),
+        icon: "error",
+        type: "error"
+      });
     });
   }
 
