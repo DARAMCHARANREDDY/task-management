@@ -20,7 +20,6 @@ export default function Task(props) {
         setCollapsed(false);
       } else {
         let newTask = {
-          id: task.id,
           title: event.target.elements.title.value,
           description: event.target.elements.description.value,
           urgency: urgencyLevel,

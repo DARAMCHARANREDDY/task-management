@@ -1,9 +1,7 @@
 import React from 'react';
 import swal from 'sweetalert';
 import { Button, TextField, Link } from '@material-ui/core';
-const axios = require('axios');
-const bcrypt = require('bcryptjs');
-var salt = bcrypt.genSaltSync(10);
+import axios from 'axios';
 
 export default class Login extends React.Component {
   constructor(props) {
@@ -18,16 +16,13 @@ export default class Login extends React.Component {
 
   login = () => {
 
-    // const pwd = bcrypt.hashSync(this.state.password, salt);
-
-    axios.post('https://taskmanagementbk.azurewebsites.net/users/login', {
+    axios.post('http://localhost:5000/users/login', {
       email: this.state.email,
       password: this.state.password,
     }).then((res) => {
-      console.log(res.data)
       if (res.data.token) {
         localStorage.setItem('token', res.data.token);
-        localStorage.setItem('user_id', res.data.id);
+        localStorage.setItem('user_id', res.data.result._id);
         this.props.history.push('/dashboard');
       } else {
         throw new Error("Invalid Username or Password")

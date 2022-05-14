@@ -1,18 +1,29 @@
 import React, { Component } from 'react';
-import {
-  Button, TextField, Dialog, DialogActions, LinearProgress,
-  DialogTitle, DialogContent, TableBody, Table,
-  TableContainer, TableHead, TableRow, TableCell
-} from '@material-ui/core';
+// import {
+//   Button, TextField, Dialog, DialogActions, LinearProgress,
+//   DialogTitle, DialogContent, TableBody, Table,
+//   TableContainer, TableHead, TableRow, TableCell
+// } from '@material-ui/core';
+import swal from 'sweetalert';
+import axios from 'axios';
 
 import App from './App'
-import { Pagination } from '@material-ui/lab';
-import swal from 'sweetalert';
-const axios = require('axios');
+// import { Pagination } from '@material-ui/lab';
 
+const API = axios.create({ baseURL: "http://localhost:5000" });
+
+API.interceptors.request.use((req) => {
+  const token = localStorage.getItem('token')
+  const id = localStorage.getItem('user_id')
+  if (token && id) {
+    req.headers.Authorization = `Bearer ${token}`
+    req.headers.id = id
+  }
+  return req;
+})
 export default class Dashboard extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       token: '',
       openProductModal: false,
@@ -26,58 +37,19 @@ export default class Dashboard extends Component {
       fileName: '',
       page: 1,
       search: '',
-      products: [],
+      tasks: [],
       pages: 0,
       loading: false
     };
   }
 
-  componentDidMount = () => {
-    let token = localStorage.getItem('token');
-    if (!token) {
-      this.props.history.push('/login');
-    } else {
-      this.setState({ token: token }, () => {
-        this.getProduct();
-      });
-    }
-  }
-
-  getProduct = () => {
-
-    this.setState({ loading: true });
-
-    let data = '?';
-    data = `${data}page=${this.state.page}`;
-    if (this.state.search) {
-      data = `${data}&search=${this.state.search}`;
-    }
-    axios.get(`https://taskmanagementbk.azurewebsites.net/get-product${data}`, {
-      headers: {
-        'token': this.state.token
-      }
-    }).then((res) => {
-      this.setState({ loading: false, products: res.data.products, pages: res.data.pages });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-      this.setState({ loading: false, products: [], pages: 0 }, () => { });
-    });
-  }
-
-  deleteProduct = (id) => {
-    axios.post('https://taskmanagementbk.azurewebsites.net/delete-product', {
-      id: id
-    }, {
+  deleteTask = (taskId) => {
+    axios.delete(`/tasks/${taskId}`, {
       headers: {
         'Content-Type': 'application/json',
-        'token': this.state.token
       }
     }).then((res) => {
-
+      this.setState(res.data);
       swal({
         text: res.data.title,
         icon: "success",
@@ -95,10 +67,85 @@ export default class Dashboard extends Component {
       });
     });
   }
+  addTask = (taskToAdd) => {
+    API.post('/tasks', JSON.stringify(taskToAdd), {
+      headers: {
+        'content-type': 'application/json',
+      },
+    }).then((res) => {
+      this.getTasks()
+      swal({
+        text: res.data.title,
+        icon: "success",
+        type: "success"
+      });
+    }).catch((err) => {
+      swal({
+        text: err.response.data.errorMessage,
+        icon: "error",
+        type: "error"
+      });
+    });
+
+  }
+  addEmptyTask = (status) => {
+    var tasks = this.state.tasks
+    const lastTask = tasks[tasks.length - 1];
+
+    let newTaskId = 1;
+
+    if (lastTask !== undefined) {
+      newTaskId = lastTask.id + 1;
+    }
+
+    // this.setState((tasks) => [
+    //   ...tasks,
+    //   {
+    //     id: newTaskId,
+    //     title: "",
+    //     description: "",
+    //     urgency: "",
+    //     status: status,
+    //   },
+    // ]);
+
+    this.setState({
+      tasks: [...tasks, {
+        title: "",
+        description: "",
+        urgency: "",
+        status: status,
+      }]
+    })
+  }
+
+  getTasks = () => {
+    axios.get('http://localhost:5000/tasks', {
+      headers: {
+        'content-type': 'application/json',
+      },
+    }).then(res => {
+      console.log(res?.data)
+      this.setState({ tasks: res?.data })
+    })
+  }
+  componentDidMount = () => {
+    let token = localStorage.getItem('token');
+    if (!token) {
+      this.props.history.push('/login');
+    } else {
+      console.log(token)
+      this.setState({ token: token }, () => {
+        this.getTasks();
+      });
+    }
+  }
+
+
 
   pageChange = (e, page) => {
     this.setState({ page: page }, () => {
-      this.getProduct();
+      this.getTasks();
     });
   }
 
@@ -106,129 +153,9 @@ export default class Dashboard extends Component {
     localStorage.setItem('token', null);
     this.props.history.push('/');
   }
-
-  onChange = (e) => {
-    if (e.target.files && e.target.files[0] && e.target.files[0].name) {
-      this.setState({ fileName: e.target.files[0].name }, () => { });
-    }
-    this.setState({ [e.target.name]: e.target.value }, () => { });
-    if (e.target.name === 'search') {
-      this.setState({ page: 1 }, () => {
-        this.getProduct();
-      });
-    }
-  };
-
-  addProduct = () => {
-    const fileInput = document.querySelector("#fileInput");
-    const file = new FormData();
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('desc', this.state.desc);
-    file.append('discount', this.state.discount);
-    file.append('price', this.state.price);
-
-    axios.post('https://taskmanagementbk.azurewebsites.net/add-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
-
-      this.handleProductClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', file: null, page: 1 }, () => {
-        this.getProduct();
-      });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-      this.handleProductClose();
-    });
-
-  }
-
-  updateProduct = () => {
-    const fileInput = document.querySelector("#fileInput");
-    const file = new FormData();
-    file.append('id', this.state.id);
-    file.append('file', fileInput.files[0]);
-    file.append('name', this.state.name);
-    file.append('desc', this.state.desc);
-    file.append('discount', this.state.discount);
-    file.append('price', this.state.price);
-
-    axios.post('https://taskmanagementbk.azurewebsites.net/update-product', file, {
-      headers: {
-        'content-type': 'multipart/form-data',
-        'token': this.state.token
-      }
-    }).then((res) => {
-
-      swal({
-        text: res.data.title,
-        icon: "success",
-        type: "success"
-      });
-
-      this.handleProductEditClose();
-      this.setState({ name: '', desc: '', discount: '', price: '', file: null }, () => {
-        this.getProduct();
-      });
-    }).catch((err) => {
-      swal({
-        text: err.response.data.errorMessage,
-        icon: "error",
-        type: "error"
-      });
-      this.handleProductEditClose();
-    });
-
-  }
-
-  handleProductOpen = () => {
-    this.setState({
-      openProductModal: true,
-      id: '',
-      name: '',
-      desc: '',
-      price: '',
-      discount: '',
-      fileName: ''
-    });
-  };
-
-  handleProductClose = () => {
-    this.setState({ openProductModal: false });
-  };
-
-  handleProductEditOpen = (data) => {
-    this.setState({
-      openProductEditModal: true,
-      id: data._id,
-      name: data.name,
-      desc: data.desc,
-      price: data.price,
-      discount: data.discount,
-      fileName: data.image
-    });
-  };
-
-  handleProductEditClose = () => {
-    this.setState({ openProductEditModal: false });
-  };
-
   render() {
     return (
-      <App />
+      <App setState={this.setState} addTask={this.addTask} deleteTask={this.deleteTask} tasks={this.state.tasks} addEmptyTask={this.addEmptyTask} />
     );
   }
 }
