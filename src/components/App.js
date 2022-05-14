@@ -16,7 +16,7 @@ function App({ setState, tasks, addTask, deleteTask, addEmptyTask}) {
   //   formdata.append('discount', this.state.discount);
   //   formdata.append('price', this.state.price);
 
-  //   axios.post('http://localhost:5000/update-product', file, {
+  //   axios.post('https://taskmanagementbk.azurewebsites.net/update-product', file, {
   //     headers: {
   //       'content-type': 'multipart/form-data',
   //       'token': this.state.token

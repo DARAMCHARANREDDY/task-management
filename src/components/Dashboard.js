@@ -10,7 +10,7 @@ import axios from 'axios';
 import App from './App'
 // import { Pagination } from '@material-ui/lab';
 
-const API = axios.create({ baseURL: "http://localhost:5000" });
+const API = axios.create({ baseURL: "https://taskmanagementbk.azurewebsites.net" });
 
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem('token')
@@ -120,7 +120,7 @@ export default class Dashboard extends Component {
   }
 
   getTasks = () => {
-    axios.get('http://localhost:5000/tasks', {
+    axios.get('https://taskmanagementbk.azurewebsites.net/tasks', {
       headers: {
         'content-type': 'application/json',
       },
