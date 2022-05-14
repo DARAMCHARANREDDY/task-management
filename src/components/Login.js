@@ -9,7 +9,7 @@ export default class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: ''
     };
   }
@@ -20,8 +20,8 @@ export default class Login extends React.Component {
 
     const pwd = bcrypt.hashSync(this.state.password, salt);
 
-    axios.post('https://taskmanagementbk.azurewebsites.net/login', {
-      username: this.state.username,
+    axios.post('https://taskmanagementbk.azurewebsites.net/users/login', {
+      email: this.state.email,
       password: pwd,
     }).then((res) => {
       localStorage.setItem('token', res.data.token);
@@ -48,12 +48,12 @@ export default class Login extends React.Component {
         <div>
           <TextField
             id="standard-basic"
-            type="text"
+            type="email"
             autoComplete="off"
-            name="username"
-            value={this.state.username}
+            name="email"
+            value={this.state.email}
             onChange={this.onChange}
-            placeholder="User Name"
+            placeholder="Email Address"
             required
           />
           <br /><br />
@@ -73,7 +73,7 @@ export default class Login extends React.Component {
             variant="contained"
             color="primary"
             size="small"
-            disabled={this.state.username === '' && this.state.password === ''}
+            disabled={this.state.email === '' && this.state.password === ''}
             onClick={this.login}
           >
             Login

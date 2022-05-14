@@ -7,7 +7,7 @@ export default class Register extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: '',
+      email: '',
       password: '',
       confirm_password: ''
     };
@@ -17,9 +17,10 @@ export default class Register extends React.Component {
 
   register = () => {
 
-    axios.post('https://taskmanagementbk.azurewebsites.net/register', {
-      username: this.state.username,
+    axios.post('https://taskmanagementbk.azurewebsites.net/users/register', {
+      email: this.state.email,
       password: this.state.password,
+      confirmpass: this.state.confirm_password,
     }).then((res) => {
       swal({
         text: res.data.title,
@@ -28,18 +29,17 @@ export default class Register extends React.Component {
       });
       this.props.history.push('/');
     }).catch((err) => {
-      // swal({
-      //   text: err.response.data.errorMessage,
-      //   icon: "error",
-      //   type: "error"
-      // });
-      console.log(err)
+      swal({
+        text: err.toString(),
+        icon: "error",
+        type: "error"
+      });
     });
   }
 
   render() {
     return (
-      <div style={{ marginTop: '200px' }}>
+      <div className='container'>
         <div>
           <h2>Register</h2>
         </div>
@@ -47,12 +47,12 @@ export default class Register extends React.Component {
         <div>
           <TextField
             id="standard-basic"
-            type="text"
+            type="email"
             autoComplete="off"
-            name="username"
-            value={this.state.username}
+            name="email"
+            value={this.state.email}
             onChange={this.onChange}
-            placeholder="User Name"
+            placeholder="Email Address"
             required
           />
           <br /><br />
@@ -83,7 +83,7 @@ export default class Register extends React.Component {
             variant="contained"
             color="primary"
             size="small"
-            disabled={this.state.username === '' && this.state.password === ''}
+            disabled={this.state.email === '' && this.state.password === ''}
             onClick={this.register}
           >
             Register

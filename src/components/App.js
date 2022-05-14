@@ -1,7 +1,8 @@
-import React,{ useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/App.css";
 import StatusLine from "./StatusLine";
-
+import swal from 'sweetalert';
+import axios from 'axios';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -32,25 +33,97 @@ function App() {
   }
 
   function addTask(taskToAdd) {
-    let filteredTasks = tasks.filter((task) => {
-      return task.id !== taskToAdd.id;
+
+    // setTasks(newTaskList);
+
+    // saveTasksToLocalStorage(newTaskList);
+    const formdata = new FormData();
+    formdata.append('name', taskToAdd.name);
+    formdata.append('desc', taskToAdd.desc);
+    formdata.append('discount', taskToAdd.discount);
+    formdata.append('price', taskToAdd.price);
+
+    axios.post('https://taskmanagementbk.azurewebsites.net/add-product', {
+      headers: {
+        'content-type': 'multipart/form-data',
+        'token': this.state.token
+      }
+    }).then((res) => {
+
+      swal({
+        text: res.data.title,
+        icon: "success",
+        type: "success"
+      });
+      // this.setState({ name: '', desc: '', discount: '', price: '', file: null, page: 1 }, () => {
+      //   this.getProduct();
+      // });
+    }).catch((err) => {
+      swal({
+        text: err.response.data.errorMessage,
+        icon: "error",
+        type: "error"
+      });
     });
 
-    let newTaskList = [...filteredTasks, taskToAdd];
-
-    setTasks(newTaskList);
-
-    saveTasksToLocalStorage(newTaskList);
   }
 
+  // updateProduct = () => {
+  //   const formdata = new FormData();
+  //   formdata.append('title', this.state.title);
+  //   formdata.append('name', this.state.name);
+  //   formdata.append('desc', this.state.desc);
+  //   formdata.append('discount', this.state.discount);
+  //   formdata.append('price', this.state.price);
+
+  //   axios.post('https://taskmanagementbk.azurewebsites.net/update-product', file, {
+  //     headers: {
+  //       'content-type': 'multipart/form-data',
+  //       'token': this.state.token
+  //     }
+  //   }).then((res) => {
+
+  //     swal({
+  //       text: res.data.title,
+  //       icon: "success",
+  //       type: "success"
+  //     });
+  //   }).catch((err) => {
+  //     swal({
+  //       text: err.response.data.errorMessage,
+  //       icon: "error",
+  //       type: "error"
+  //     });
+  //   });
+
+  // }
+
   function deleteTask(taskId) {
-    let filteredTasks = tasks.filter((task) => {
-      return task.id !== taskId;
+    axios.post('https://taskmanagementbk.azurewebsites.net/delete-product', {
+      id: taskId
+    }, {
+      headers: {
+        'Content-Type': 'application/json',
+        'token': this.state.token
+      }
+    }).then((res) => {
+      setTasks(res.data);
+      swal({
+        text: res.data.title,
+        icon: "success",
+        type: "success"
+      });
+
+      this.setState({ page: 1 }, () => {
+        this.pageChange(null, 1);
+      });
+    }).catch((err) => {
+      swal({
+        text: err.response.data.errorMessage,
+        icon: "error",
+        type: "error"
+      });
     });
-
-    setTasks(filteredTasks);
-
-    saveTasksToLocalStorage(filteredTasks);
   }
 
   function moveTask(id, newStatus) {
